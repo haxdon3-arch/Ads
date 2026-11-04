@@ -1,0 +1,31 @@
+name: Build iOS Tweak
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macos-14
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install SDK Dependencies
+        run: |
+          git clone https://github.com/theos/sdks.git $HOME/theos/sdks
+
+      - name: Setup Theos Environment
+        run: |
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+
+      - name: Compile Tweak (.dylib)
+        run: |
+          export THEOS=$HOME/theos
+          make package FINALPACKAGE=1
+
+      - name: Upload Compiled Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-dylib
+          path: .theos/obj/debug/arm64/*.dylib
