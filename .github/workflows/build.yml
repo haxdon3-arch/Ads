@@ -17,6 +17,7 @@ jobs:
 
       - name: Install SDK Dependencies
         run: |
+          rm -rf $HOME/theos/sdks
           git clone https://github.com/theos/sdks.git $HOME/theos/sdks
 
       - name: Compile Tweak (.dylib)
